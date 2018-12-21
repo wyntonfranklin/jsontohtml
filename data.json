@@ -1,0 +1,14 @@
+{
+  "html": {
+    "h1": "example glossary",
+    "p" : "wynton franklin",
+    "h2" : {
+      "text" : "Superman",
+      "style" : "font-weight:bold"
+    },
+    "div" : {
+      "h1" : "hello",
+      "p" : "hellow rod",
+    }
+  }
+}

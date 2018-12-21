@@ -1,0 +1,12 @@
+{
+    "name": "shady/jsontohtml",
+    "description": "A json to html converter",
+    "license": "mit",
+    "authors": [
+        {
+            "name": "Wynton Franklin",
+            "email": "wynton.franklin@gmail.com"
+        }
+    ],
+    "require": {}
+}
