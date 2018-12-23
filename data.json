@@ -1,14 +1,38 @@
 {
   "html": {
-    "h1": "example glossary",
+    "h1": "Sample Demo",
+    "p" : {
+      "text" : "This is what you can do",
+      "style" : "color:blue; font-size:12px; padding:3px;"
+    },
+    "div" : {
+      "h1" : "Do you belive me",
+      "p"  : "I hope you do ?",
+      "div" : {
+        "h2" : "test inner div"
+      }
+    },
+    "div" : {
+        "h1" : "This is Wynton",
+        "p" : "test"
+    },
     "p" : "wynton franklin",
     "h2" : {
       "text" : "Superman",
-      "style" : "font-weight:bold"
+      "style" : "font-weight:bold",
+      "class" : "btn"
+    },
+    "h1" : {
+      "text" : "Dogs are happy",
+      "id" : "my-dogs"
     },
     "div" : {
       "h1" : "hello",
-      "p" : "hellow rod",
+      "p" : "hellow rod"
+    },
+    "div" :{
+      "h1" :"bye",
+      "p" : "helo"
     }
   }
 }

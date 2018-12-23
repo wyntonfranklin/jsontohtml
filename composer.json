@@ -8,5 +8,7 @@
             "email": "wynton.franklin@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "nicmart/tree": "~0.2"
+    }
 }

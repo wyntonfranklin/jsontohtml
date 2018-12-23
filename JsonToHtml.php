@@ -6,21 +6,29 @@
  * Time: 11:36 AM
  */
 
-namespace wfranklin;
-
+include("HtmlElement.php");
 
 class JsonToHtml
 {
+
+    const HTML_TAG="html";
+    const P_TAG ="p";
+    const H1_TAG="h1";
+
     private $_rawJsonData;
     private $_jsonAsArray;
     private $_output;
     private $closeElements = array();
+    private $_lineElements = array();
+    private $_childrenElements = array();
+    private $root;
+
     /**
      * JsonToHtml constructor.
      */
     public function __construct()
     {
-
+        $root = new Tree\Node\Node('document');
 
     }
 
@@ -30,7 +38,38 @@ class JsonToHtml
             $line = fgets($file);
             $this->parseLine($line);
         }
+        $this->createHtmlOutput();
         //var_dump($this->closeElements);
+    }
+
+    private function createHtmlOutput()
+    {
+        foreach($this->_lineElements as $htmlElement){
+            echo $htmlElement->createHtml() . "\n";
+        }
+        echo '--------child  elements-------'."\n";
+        foreach($this->_childrenElements as $htmlElement){
+            echo $htmlElement->createHtml() . "\n";
+        }
+        echo '--------full elements-------'."\n";
+        $length = count($this->_childrenElements)-1;
+        $children = $this->_childrenElements;
+        $o= "";
+        $parent = "";
+        for($i=0; $i<=$length; $i++){
+            if($i!==0){
+                $o .= $children[$i]->createHtml();
+            }
+        }
+        $parent = $children[0]->addContent($o);
+        $o = $parent->createHtml();
+        $this->writeToFile($o);
+        echo $o;
+    }
+
+    private function writeToFile($output)
+    {
+        file_put_contents("demo.html", $output);
     }
 
     private function parseLine($line)
@@ -40,25 +79,34 @@ class JsonToHtml
         if($semPosition !== false){
             $before = $this->formatData(substr($line, 0, $semPosition));
             $after =  $this->formatData(substr($line, $semPosition+1));
-            echo "before- " . trim($before). " : ";
-            echo "after- " . trim($after) ."\n";
-            $this->createHtmlElement($before, $after);
+           // echo "before- " . trim($before). " : ";
+           // echo "after- " . trim($after) ."\n";
+            $hE = $this->createHtmlElement($before, $after);
+            $this->_lineElements[] = $hE;
             if($after === "{"){
                $this->closeElements[] = $before;
             }
-
         }else{
             $bracket = trim($line);
             if($bracket !== "{"){
                 $bracket = $this->formatData($line);
                 $popped = array_pop($this->closeElements);
-                echo "braket : " . $bracket . "\n";
-                echo "closing elemnt: " . $popped . "\n";
-                $this->closeElement($popped);
+               // echo "braket : " . $bracket . "\n";
+               // echo "closing elemnt: " . $popped . "\n";
+                //$this->closeElement($popped);
             }
         }
+    }
 
+    private function getLastInElement()
+    {
+        $popped = array_pop($this->_lineElements);
+        return $popped;
+    }
 
+    private function addLineElement(HtmlElement $el)
+    {
+        array_push($this->_lineElements, $el);
     }
 
     private function formatData($text)
@@ -68,23 +116,30 @@ class JsonToHtml
 
     private function createHtmlElement($element, $content)
     {
-        if($content==="{"){
-            if($element === "html"){
-                $this->addOutput("<html>");
-            }else if($element === "h1"){
-                $this->addOutput("<h1>");
-            }else if( $element === "p"){
-                $this->addOutput("<p>");
+        $htmlElement = new HtmlElement();
+        if($this->isHtmlTag($element)){
+            $htmlElement->create($element);
+            if($content==="{"){
+                $this->_childrenElements[] = $htmlElement;
+                $htmlElement->setHasChildren(true);
+            }else{
+                $htmlElement->setContent($content);
+                $child = array_pop($this->_childrenElements);
+                if($child !== null ){
+                    if($child->getHasChildren()){
+                        $child->addContent($htmlElement->createHtml());
+                        array_push($this->_childrenElements, $child);
+                    }
+                }
             }
         }else{
-            if($element === "html"){
-                $this->addOutput("<html>");
-            }else if($element === "h1"){
-                $this->addOutput("<h1>". $content. "</h1>");
-            }else if( $element === "p"){
-                $this->addOutput("<p>" . $content . "</p>");
+            $htmlElement = $this->getLastInElement();
+            if($htmlElement !== null){
+                $htmlElement->addAttributes($element, $content);
+               // $this->addLineElement($htmlElement);
             }
         }
+        return $htmlElement;
     }
 
     private function closeElement($type){
@@ -169,6 +224,15 @@ class JsonToHtml
     private function getJsonAsArray()
     {
         return $this->_jsonAsArray;
+    }
+
+    private function isHtmlTag($el)
+    {
+        $tags = array("html","h1","p","h2","div");
+        if(in_array($el, $tags)){
+            return true;
+        }
+        return false;
     }
 
 

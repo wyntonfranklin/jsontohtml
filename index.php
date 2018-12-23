@@ -6,9 +6,11 @@
  * Time: 11:37 AM
  */
 
+require 'vendor/autoload.php';
+
+
 include("JsonToHtml.php");
 
-use wfranklin\JsonToHtml;
 
 $jthml = new JsonToHtml();
 $jthml->readFile("data.json");
