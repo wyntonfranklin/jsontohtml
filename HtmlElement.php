@@ -19,7 +19,11 @@ class HtmlElement
     private $_style;
     private $_class;
     private $_id;
+    private $_href;
     private $_hasChildren=false;
+    private $children= array();
+    private $parent;
+    private $_generalAttributes=array();
 
 
     /**
@@ -97,16 +101,24 @@ class HtmlElement
      */
     public function getAttributes()
     {
-        $attibuteMembers = ['class','id','style'];
+        $attibuteMembers = ['class','id','style','href'];
         $o = '';
         foreach ($attibuteMembers as $member){
             $classMember = "_" . $member;
             if(!empty($this->$classMember)){
-                $o .= $member . '="'.$this->$classMember.'" ';
+                $o .= $this->getAttibMemberRealName($member) . '="'.$this->$classMember.'" ';
             }
         }
         $this->setAttributes($o);
         return $this->_attributes;
+    }
+
+    private function getAttibMemberRealName($psudoName)
+    {
+        if($psudoName === 'inline'){
+            return "style";
+        }
+        return $psudoName;
     }
 
     /**
@@ -197,8 +209,53 @@ class HtmlElement
         $this->_id = $id;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getHref()
+    {
+        return $this->_href;
+    }
+
+    /**
+     * @param mixed $href
+     */
+    public function setHref($href)
+    {
+        $this->_href = $href;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGeneralAttributes()
+    {
+        return $this->_generalAttributes;
+    }
+
+    /**
+     * @param mixed $generalAttributes
+     */
+    public function setGeneralAttributes($attributes)
+    {
+        $this->_generalAttributes = $attributes;
+    }
 
 
+    public function addGeneralAttributes($param, $value)
+    {
+        $this->_generalAttributes[$param] = $value;
+    }
+
+
+    public function createGeneralAttributes()
+    {
+        $o = "";
+        foreach ($this->getGeneralAttributes() as $name => $value ){
+            $o .= $name . '="'.$value.'" ';
+        }
+        return $o;
+    }
 
 
 
@@ -213,13 +270,25 @@ class HtmlElement
     {
         if($type == "text"){
             $this->addContent($attribs);
-        }else if($type == "style"){
+        }else if($type == "inline"){
            $this->setStyle($attribs);
         }else if($type == "class"){
             $this->setClass($attribs);
         }else if($type == "id"){
             $this->setId($attribs);
+        }else if($type == "href"){
+            $this->setHref($attribs);
         }
+    }
+
+
+    public function isVerifiedAttribue($attrib)
+    {
+        $verifiedMembers = ['class','id','inline','href','text'];
+        if(in_array($attrib, $verifiedMembers)){
+            return true;
+        }
+        return false;
     }
 
 
@@ -234,14 +303,64 @@ class HtmlElement
         return $classOptions;
     }
 
-    public function createHtml()
+    public function getHtml()
     {
         $o = "<" . $this->getTag();
-        $o .= " " . $this->getAttributes() . ">";
+        $o .= " " . $this->getAttributes() . $this->createGeneralAttributes() . ">";
         $o .= $this->getContent();
         $o .= "</" . $this->getTag() . ">";
         return $o;
     }
+
+    public function addChild($element)
+    {
+        $element->parent = $this;
+        $this->children[] = $element;
+    }
+
+    public function getChildrenCount()
+    {
+        return count($this->children);
+    }
+
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param mixed $parent
+     */
+    public function setParent($parent)
+    {
+        $this->parent = $parent;
+    }
+
+    public function hasParent()
+    {
+        if($this->getParent() !== null ){
+            return true;
+        }
+        return false;
+    }
+
+    public function removeChild()
+    {
+        array_pop($this->children );
+    }
+
+    public function removeChildren(){
+        $this->children = array();
+    }
+
 
 
 }

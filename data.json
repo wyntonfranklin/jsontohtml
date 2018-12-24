@@ -1,38 +1,84 @@
 {
   "html": {
-    "h1": "Sample Demo",
+    "header" :  {
+      "title" : "My Json HTML, Demo",
+    },
+    "h1": "Welcome to the JSON, Html Demo.",
     "p" : {
-      "text" : "This is what you can do",
-      "style" : "color:blue; font-size:12px; padding:3px;"
+      "text" : "This is a great stupid idea. Welcome to it and more.",
+      "inline" : "color:grey; font-size:20px; padding:3px;",
+      "class" : "batman",
+    },
+    "a" : {
+      "text" : "For more information",
+      "inline" : "font-weight:bold; display:block;",
+      "href" : "www.google.com"
     },
     "div" : {
-      "h1" : "Do you belive me",
-      "p"  : "I hope you do ?",
-      "div" : {
-        "h2" : "test inner div"
+      "h3" : "List elements",
+      "inline" : "padding:5px;",
+      "ul" : {
+        "li" : "First List",
+        "li" : "Second list",
+      },
+      "hr" : "",
+      "ol" : {
+        "li" : "Number list one",
+        "li": "numbered list two"
+      },
+    },
+    "table" : {
+        "tr" : {
+          "td" : "First",
+          "td" : "Second"
+        },
+        "tr" : {
+          "td" : "Wynton",
+          "td" : "Franklin"
+        }
+    },
+    "div" : {
+      "h3" : "Form Elements Section",
+      "p" : "This is my first form",
+      "form" : {
+        "label" : {
+          "text"  : "A Input",
+          "inline" : "display:block; margin-right:3px;"
+        },
+        "input" : {
+          "inline" : "display:block",
+          "type" : "text",
+          "placeholder" : "My first input",
+          "value" : ""
+        },
+        "br" : "",
+        "label" : {
+          "text" : "My select element"
+        },
+        "select" : {
+          "option" : "First Item",
+          "option" : "Second Item"
+        }
       }
     },
     "div" : {
+        "inline" : "padding: 5px; background: #ccc;",
         "h1" : "This is Wynton",
-        "p" : "test"
+        "p" : "And msome more text",
+        "div" : {
+          "inline" : "background:#ddd; padding:5px;",
+          "p" : "hello"
+        }
     },
     "p" : "wynton franklin",
     "h2" : {
       "text" : "Superman",
-      "style" : "font-weight:bold",
+      "inline" : "font-weight:bold",
       "class" : "btn"
     },
     "h1" : {
       "text" : "Dogs are happy",
       "id" : "my-dogs"
-    },
-    "div" : {
-      "h1" : "hello",
-      "p" : "hellow rod"
-    },
-    "div" :{
-      "h1" :"bye",
-      "p" : "helo"
     }
   }
 }

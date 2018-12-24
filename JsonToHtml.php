@@ -16,55 +16,68 @@ class JsonToHtml
     const H1_TAG="h1";
 
     private $_rawJsonData;
-    private $_jsonAsArray;
     private $_output;
     private $closeElements = array();
     private $_lineElements = array();
     private $_childrenElements = array();
-    private $root;
 
     /**
      * JsonToHtml constructor.
      */
     public function __construct()
     {
-        $root = new Tree\Node\Node('document');
 
     }
 
-    public function readFile($file){
+    public function readFile($file)
+    {
         $file = fopen(__DIR__.'/' . $file,'r');
         while (!feof($file)){
             $line = fgets($file);
             $this->parseLine($line);
         }
         $this->createHtmlOutput();
-        //var_dump($this->closeElements);
     }
 
     private function createHtmlOutput()
     {
-        foreach($this->_lineElements as $htmlElement){
-            echo $htmlElement->createHtml() . "\n";
+        $this->getElementsTreeOutput();
+    }
+
+    private function getElementsTreeOutput()
+    {
+        $this->recursiveElementTraverse($this->_childrenElements[0]);
+        $o =  $this->_childrenElements[0]->getHtml();
+        $this->setOutput($o);
+        $this->writeToFile($o);
+    }
+
+    private function recursiveElementTraverse($element)
+    {
+        if($element->getChildrenCount() >0 ){
+            foreach ($element->getChildren() as $child) {
+                $this->recursiveElementTraverse($child);
+            }
+        }else{
+           $this->recursiveAddToParent($element);
         }
-        echo '--------child  elements-------'."\n";
-        foreach($this->_childrenElements as $htmlElement){
-            echo $htmlElement->createHtml() . "\n";
-        }
-        echo '--------full elements-------'."\n";
-        $length = count($this->_childrenElements)-1;
-        $children = $this->_childrenElements;
-        $o= "";
-        $parent = "";
-        for($i=0; $i<=$length; $i++){
-            if($i!==0){
-                $o .= $children[$i]->createHtml();
+    }
+
+    private function recursiveAddToParent($element){
+        if($element!== null){
+            $parent = $element->getParent();
+            if($parent!== null){
+                echo "Parents: " .$parent->getHtml() . "\n";
+                $parent->addContent($element->getHtml());
+                echo "Childs: " .$element->getHtml() . "\n";
+                $parent->removeChild();
+                if($parent->getChildrenCount()==0){
+                    $this->recursiveAddToParent($parent);
+                }
+            }else{
+
             }
         }
-        $parent = $children[0]->addContent($o);
-        $o = $parent->createHtml();
-        $this->writeToFile($o);
-        echo $o;
     }
 
     private function writeToFile($output)
@@ -79,8 +92,6 @@ class JsonToHtml
         if($semPosition !== false){
             $before = $this->formatData(substr($line, 0, $semPosition));
             $after =  $this->formatData(substr($line, $semPosition+1));
-           // echo "before- " . trim($before). " : ";
-           // echo "after- " . trim($after) ."\n";
             $hE = $this->createHtmlElement($before, $after);
             $this->_lineElements[] = $hE;
             if($after === "{"){
@@ -89,14 +100,19 @@ class JsonToHtml
         }else{
             $bracket = trim($line);
             if($bracket !== "{"){
-                $bracket = $this->formatData($line);
-                $popped = array_pop($this->closeElements);
-               // echo "braket : " . $bracket . "\n";
-               // echo "closing elemnt: " . $popped . "\n";
-                //$this->closeElement($popped);
+                $sizeOfChildren = count($this->_childrenElements);
+                if($sizeOfChildren!=1){
+                    $child = array_pop($this->_childrenElements);
+                    $sizeOfChildren = count($this->_childrenElements);
+                    $parent = $this->_childrenElements[$sizeOfChildren-1];
+                    if($parent!==null){
+                        $parent->addChild($child);
+                    }
+                }
             }
         }
     }
+
 
     private function getLastInElement()
     {
@@ -111,7 +127,13 @@ class JsonToHtml
 
     private function formatData($text)
     {
-        return str_replace('"', "", trim($text));
+        $data = str_replace('"', "", trim($text));
+        $lastElement = substr($data, -1);
+        if(strcmp($lastElement,",")==0){
+            return substr($data, 0, -1);
+        }else{
+            return $data;
+        }
     }
 
     private function createHtmlElement($element, $content)
@@ -121,36 +143,27 @@ class JsonToHtml
             $htmlElement->create($element);
             if($content==="{"){
                 $this->_childrenElements[] = $htmlElement;
-                $htmlElement->setHasChildren(true);
             }else{
                 $htmlElement->setContent($content);
                 $child = array_pop($this->_childrenElements);
                 if($child !== null ){
-                    if($child->getHasChildren()){
-                        $child->addContent($htmlElement->createHtml());
-                        array_push($this->_childrenElements, $child);
-                    }
+                    $child->addChild($htmlElement);;
+                    array_push($this->_childrenElements, $child);
                 }
             }
         }else{
             $htmlElement = $this->getLastInElement();
             if($htmlElement !== null){
-                $htmlElement->addAttributes($element, $content);
-               // $this->addLineElement($htmlElement);
+                if($htmlElement->isVerifiedAttribue($element)){
+                    $htmlElement->addAttributes($element, $content);
+                }else{
+                    $htmlElement->addGeneralAttributes($element, $content);
+                }
             }
         }
         return $htmlElement;
     }
 
-    private function closeElement($type){
-        if($type === "html"){
-            $this->addOutput("</html>");
-        }else if($type === "h1"){
-            $this->addOutput("</h1>");
-        }else if( $type === "p"){
-            $this->addOutput("</p>");
-        }
-    }
 
     public function getTestOutput()
     {
@@ -213,27 +226,20 @@ class JsonToHtml
         return $this->_output;
     }
 
-    private function convertJsonToArray($json)
-    {
-        var_dump($json);
-        $this->_jsonAsArray = json_decode($json, TRUE);
-        var_dump($this->_jsonAsArray);
-        return $this->_jsonAsArray;
-    }
-
-    private function getJsonAsArray()
-    {
-        return $this->_jsonAsArray;
-    }
 
     private function isHtmlTag($el)
     {
-        $tags = array("html","h1","p","h2","div");
+        $tags = ["html","h1","p","h2","div","a","span",
+            "h3","h4","h5","h6","script","header","footer","title","style",
+            "ul","li","ol","section","article","pre","body","nav","hr","img"
+            ,"iframe","table","tr","td","th","form","input","label","br",
+            "select","option"];
         if(in_array($el, $tags)){
             return true;
         }
         return false;
     }
+
 
 
 }

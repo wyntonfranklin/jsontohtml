@@ -9,6 +9,5 @@
         }
     ],
     "require": {
-        "nicmart/tree": "~0.2"
     }
 }
