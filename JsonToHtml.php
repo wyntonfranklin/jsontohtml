@@ -14,8 +14,9 @@ class JsonToHtml
     const HTML_TAG="html";
     const P_TAG ="p";
     const H1_TAG="h1";
+    const OPEN_BRACKET = "{";
+    const SEMI_COLON = ":";
 
-    private $_rawJsonData;
     private $_output;
     private $closeElements = array();
     private $_lineElements = array();
@@ -31,13 +32,17 @@ class JsonToHtml
 
     public function readFile($file)
     {
-        $file = fopen(__DIR__.'/' . $file,'r');
-        while (!feof($file)){
-            $line = fgets($file);
-            $this->parseLine($line);
+        $file = @fopen(__DIR__.'/' . $file,'r');
+        if($file){
+            while (!feof($file)){
+                $line = fgets($file);
+                $this->parseLine($line);
+            }
+            $this->createHtmlOutput();
         }
-       return $this->createHtmlOutput();
+       return $this->getOutput();
     }
+
 
     private function createHtmlOutput()
     {
@@ -47,9 +52,8 @@ class JsonToHtml
     private function getElementsTreeOutput()
     {
         $this->recursiveElementTraverse($this->_childrenElements[0]);
-        $o =  $this->_childrenElements[0]->getHtml();
+        $o = $this->_childrenElements[0]->getHtml();
         $this->setOutput($o);
-        $this->writeToFile("demo.html");
         return $o;
     }
 
@@ -83,24 +87,28 @@ class JsonToHtml
 
     public function writeToFile($filename="")
     {
-        file_put_contents($filename, $this->getOutput());
+        try{
+            file_put_contents($filename, $this->getOutput());
+        }catch (Exception $e){
+            echo $e->getMessage();
+        }
     }
 
     private function parseLine($line)
     {
         $closeElements = array();
-        $semPosition = strpos($line, ":");
+        $semPosition = strpos($line, self::SEMI_COLON );
         if($semPosition !== false){
             $before = $this->formatData(substr($line, 0, $semPosition));
             $after =  $this->formatData(substr($line, $semPosition+1));
             $hE = $this->createHtmlElement($before, $after);
             $this->_lineElements[] = $hE;
-            if($after === "{"){
+            if($after === self::OPEN_BRACKET){
                $this->closeElements[] = $before;
             }
         }else{
             $bracket = trim($line);
-            if($bracket !== "{"){
+            if($bracket !== self::OPEN_BRACKET ){
                 $sizeOfChildren = count($this->_childrenElements);
                 if($sizeOfChildren!=1){
                     $child = array_pop($this->_childrenElements);
@@ -142,7 +150,7 @@ class JsonToHtml
         $htmlElement = new HtmlElement();
         if($this->isHtmlTag($element)){
             $htmlElement->create($element);
-            if($content==="{"){
+            if( $content===self::OPEN_BRACKET ){
                 $this->_childrenElements[] = $htmlElement;
             }else{
                 $htmlElement->setContent($content);
@@ -171,47 +179,8 @@ class JsonToHtml
         return $this->getOutput();
     }
 
-    public function setJsonData($data)
-    {
-        $this->_rawJsonData = $data;
-    }
 
-    public function getRawJsonData()
-    {
-        return $this->_rawJsonData;
-    }
-
-    private function generateHtml()
-    {
-        $subject = $this->getRawJsonData();
-        foreach(preg_split("/((\r?\n)|(\r\n?))/", $subject) as $line){
-            // do stuff with $line
-            $this->addOutput($line). '/n';
-        }
-       return $this->getOutput();
-
-    }
-
-    private function iterateJsonArray($data)
-    {
-        foreach ($data as $key=>$value){
-            if(is_array($value)) {
-                $this->iterateJsonArray($value);
-            }else {
-                $this->addOutput("$key => $value\n");
-            }
-        }
-        return $this->getOutput();
-    }
-
-
-    public function getHtmlData()
-    {
-       $output = $this->generateHtml();
-       return $output;
-    }
-
-    private function getOutput()
+    public function getOutput()
     {
         return $this->_output;
     }

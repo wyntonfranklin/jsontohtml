@@ -2,11 +2,9 @@
 /**
  * Created by PhpStorm.
  * User: shady
- * Date: 12/21/18
- * Time: 11:37 AM
+ * Date: 12/25/18
+ * Time: 9:14 AM
  */
-
-require 'vendor/autoload.php';
 
 
 include("JsonToHtml.php");
@@ -14,5 +12,5 @@ include("JsonToHtml.php");
 
 $jthml = new JsonToHtml();
 $jthml->readFile("data.json");
-$jthml->writeToFile("demo.html");
+$jthml->writeToFile("demo.php");
 echo $jthml->getOutput();

@@ -244,7 +244,9 @@ class HtmlElement
 
     public function addGeneralAttributes($param, $value)
     {
-        $this->_generalAttributes[$param] = $value;
+        if(!empty($param) && !empty($value)){
+            $this->_generalAttributes[$param] = $value;
+        }
     }
 
 
@@ -292,16 +294,6 @@ class HtmlElement
     }
 
 
-    private function addClasses( $options )
-    {
-        $classOptions = '';
-        foreach( $options as $option=>$value){
-            if( !empty( $value ) ){
-                $classOptions .= $option.'='.'"'.$value.'"'.' ';
-            }
-        }
-        return $classOptions;
-    }
 
     public function getHtml()
     {
@@ -316,7 +308,7 @@ class HtmlElement
         return $o;
     }
 
-    public function isSpecialTag()
+    private function isSpecialTag()
     {
         $specialElements = ["hr","br"];
         if(in_array($this->getTag(), $specialElements)){

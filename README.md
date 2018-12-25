@@ -61,8 +61,7 @@ $element->create("h1");
 $element->setId("my-element");
 $element->addGeneralAttributes("data-file","file.json");
 $element->addContent("Hello World");
-echo $element->getHtml(); 
-//Output =  <h1 id="my-element" data-file="file.json">Hello World</h1>
+echo $element->getHtml(); // <h1 id="my-element" data-file="file.json">Hello World</h1>
 ```
 
 
@@ -87,7 +86,35 @@ echo $element->getHtml(); // <div><p>This is a hello world</p></div>
 
 
 
-### Create Child Element
+### Create Children Elements
+
+You can create child elements and add them to parent elements. You can then loop through all the child elements and them to your parent element.
+
+```php
+// create div
+$element = new HtmlElement();
+$element->create("div");
+
+// create h1 element using constructor
+$element2 = new HtmlElemenet("h1");
+$element2->addContent("This is a header");
+
+// create p element
+$element3 = new HtmlElement();
+$element3->create("p");
+$element3->addContent("This is a hello world");
+
+// add children to div
+$element->addChild($element2);
+$element->addChild($element3);
+
+// Create Parent Div
+foreach($element->getChildren() as $child){
+    $element->addContent($child->getHtml()); // add child html to parent
+}
+
+echo $element->getHtml(); // get div with child elements html
+```
 
 
 
