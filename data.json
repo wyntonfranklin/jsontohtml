@@ -1,84 +1,127 @@
 {
   "html": {
-    "header" :  {
-      "title" : "My Json HTML, Demo",
-    },
-    "h1": "Welcome to the JSON, Html Demo.",
-    "p" : {
-      "text" : "This is a great stupid idea. Welcome to it and more.",
-      "inline" : "color:grey; font-size:20px; padding:3px;",
-      "class" : "batman",
-    },
-    "a" : {
-      "text" : "For more information",
-      "inline" : "font-weight:bold; display:block;",
-      "href" : "www.google.com"
-    },
-    "div" : {
-      "h3" : "List elements",
-      "inline" : "padding:5px;",
-      "ul" : {
-        "li" : "First List",
-        "li" : "Second list",
+    "lang" :"en",
+    "head": {
+      "title": "My Json HTML, Demo",
+      "meta" : {
+        "charset" : "utf-8"
       },
-      "hr" : "",
-      "ol" : {
-        "li" : "Number list one",
-        "li": "numbered list two"
+      "meta" : {
+        "name" : "viewport",
+        "content" : "width=device-width, initial-scale=1"
       },
-    },
-    "table" : {
-        "tr" : {
-          "td" : "First",
-          "td" : "Second"
-        },
-        "tr" : {
-          "td" : "Wynton",
-          "td" : "Franklin"
-        }
-    },
-    "div" : {
-      "h3" : "Form Elements Section",
-      "p" : "This is my first form",
-      "form" : {
-        "label" : {
-          "text"  : "A Input",
-          "inline" : "display:block; margin-right:3px;"
-        },
-        "input" : {
-          "inline" : "display:block",
-          "type" : "text",
-          "placeholder" : "My first input",
-          "value" : ""
-        },
-        "br" : "",
-        "label" : {
-          "text" : "My select element"
-        },
-        "select" : {
-          "option" : "First Item",
-          "option" : "Second Item"
-        }
+      "meta" : {
+        "name" : "description",
+        "content" : ""
+      },
+      "meta" : {
+        "name" : "author",
+        "content" : ""
+      },
+      "link" : {
+        "rel" : "stylesheet",
+        "scr" : "css/style.css"
       }
     },
-    "div" : {
-        "inline" : "padding: 5px; background: #ccc;",
-        "h1" : "This is Wynton",
-        "p" : "And msome more text",
-        "div" : {
-          "inline" : "background:#ddd; padding:5px;",
-          "p" : "hello"
+    "body": {
+      "inline" : "padding: 5px;",
+      "h1": "Welcome to the JSON, Html Demo.",
+      "p": {
+        "text": "A php class to convert json objects to html.",
+        "inline": "color:grey; font-size:20px; padding:3px;",
+        "class": "batman"
+      },
+      "img" : {
+        "inline" : "border: 1px solid black;",
+        "src" : "https://core.xhuma.co/uploads/2018/12/n9datm.png",
+        "width" : "100px",
+        "alt" : "image"
+      },
+      "br" : "",
+      "a": {
+        "text": "For more information",
+        "inline": "font-weight:bold; display:block;",
+        "href": "www.google.com"
+      },
+      "div": {
+        "h3": "List elements",
+        "inline": "padding:5px;",
+        "ul": {
+          "li": "First List",
+          "li": "Second list"
+        },
+        "hr": "",
+        "ol": {
+          "li": "Number list one",
+          "li": "numbered list two"
         }
-    },
-    "p" : "wynton franklin",
-    "h2" : {
-      "text" : "Superman",
-      "inline" : "font-weight:bold",
-      "class" : "btn"
-    },
-    "h1" : {
-      "text" : "Dogs are happy",
-      "id" : "my-dogs"
+      },
+      "table": {
+        "tr": {
+          "td": "First",
+          "td": "Second"
+        },
+        "tr": {
+          "td": "Wynton",
+          "td": "Franklin"
+        }
+      },
+      "div": {
+        "h3": "Form Elements Section",
+        "p": "This is my first form",
+        "form": {
+          "inline": "border: 1px solid #ccc; padding: 5px;",
+          "label": {
+            "text": "A Input",
+            "inline": "display:block; margin-right:3px;"
+          },
+          "input": {
+            "inline": "display:block",
+            "type": "text",
+            "placeholder": "My first input",
+            "value": ""
+          },
+          "br": "",
+          "label": {
+            "text": "My select element"
+          },
+          "br": "",
+          "select": {
+            "inline": "display:block",
+            "option": "First Item",
+            "option": "Second Item"
+          },
+          "br": "",
+          "label": {
+            "text": "My text area element"
+          },
+          "br": "",
+          "textarea": {
+            "text": "This is a a text area",
+            "cols": "25",
+            "inline": "display:block"
+          }
+        }
+      },
+      "div": {
+        "inline": "padding: 5px; background: #ccc;",
+        "h1": "This is Wynton",
+        "p": "And msome more text",
+        "div": {
+          "inline": "background:#ddd; padding:5px;",
+          "p": "hello"
+        }
+      },
+      "p": "wynton franklin",
+      "h2": {
+        "text": "Superman",
+        "inline": "font-weight:bold",
+        "class": "btn"
+      },
+      "h1": {
+        "text": "Dogs are happy",
+        "id": "my-dogs"
+      }
     }
   }
 }

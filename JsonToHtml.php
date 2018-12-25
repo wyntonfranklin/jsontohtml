@@ -36,12 +36,12 @@ class JsonToHtml
             $line = fgets($file);
             $this->parseLine($line);
         }
-        $this->createHtmlOutput();
+       return $this->createHtmlOutput();
     }
 
     private function createHtmlOutput()
     {
-        $this->getElementsTreeOutput();
+        return $this->getElementsTreeOutput();
     }
 
     private function getElementsTreeOutput()
@@ -49,7 +49,8 @@ class JsonToHtml
         $this->recursiveElementTraverse($this->_childrenElements[0]);
         $o =  $this->_childrenElements[0]->getHtml();
         $this->setOutput($o);
-        $this->writeToFile($o);
+        $this->writeToFile("demo.html");
+        return $o;
     }
 
     private function recursiveElementTraverse($element)
@@ -67,9 +68,9 @@ class JsonToHtml
         if($element!== null){
             $parent = $element->getParent();
             if($parent!== null){
-                echo "Parents: " .$parent->getHtml() . "\n";
+                //echo "Parents: " .$parent->getHtml() . "\n";
                 $parent->addContent($element->getHtml());
-                echo "Childs: " .$element->getHtml() . "\n";
+               // echo "Childs: " .$element->getHtml() . "\n";
                 $parent->removeChild();
                 if($parent->getChildrenCount()==0){
                     $this->recursiveAddToParent($parent);
@@ -80,9 +81,9 @@ class JsonToHtml
         }
     }
 
-    private function writeToFile($output)
+    public function writeToFile($filename="")
     {
-        file_put_contents("demo.html", $output);
+        file_put_contents($filename, $this->getOutput());
     }
 
     private function parseLine($line)
@@ -230,10 +231,10 @@ class JsonToHtml
     private function isHtmlTag($el)
     {
         $tags = ["html","h1","p","h2","div","a","span",
-            "h3","h4","h5","h6","script","header","footer","title","style",
+            "h3","h4","h5","h6","script","head","header","footer","title","style",
             "ul","li","ol","section","article","pre","body","nav","hr","img"
             ,"iframe","table","tr","td","th","form","input","label","br",
-            "select","option"];
+            "select","option","textarea","meta","link"];
         if(in_array($el, $tags)){
             return true;
         }

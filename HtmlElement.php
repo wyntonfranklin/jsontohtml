@@ -306,10 +306,22 @@ class HtmlElement
     public function getHtml()
     {
         $o = "<" . $this->getTag();
-        $o .= " " . $this->getAttributes() . $this->createGeneralAttributes() . ">";
-        $o .= $this->getContent();
-        $o .= "</" . $this->getTag() . ">";
+        if($this->isSpecialTag()){
+            $o .= " " . $this->getAttributes() . $this->createGeneralAttributes() . "/>";
+        }else{
+            $o .= " " . $this->getAttributes() . $this->createGeneralAttributes() . ">";
+            $o .= $this->getContent();
+            $o .= "</" . $this->getTag() . ">";
+        }
         return $o;
+    }
+
+    public function isSpecialTag()
+    {
+        $specialElements = ["hr","br"];
+        if(in_array($this->getTag(), $specialElements)){
+            return true;
+        }
     }
 
     public function addChild($element)
@@ -357,7 +369,8 @@ class HtmlElement
         array_pop($this->children );
     }
 
-    public function removeChildren(){
+    public function removeChildren()
+    {
         $this->children = array();
     }
 
