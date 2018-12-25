@@ -18,9 +18,13 @@ include("JsonToHtml.php");
 Create a JsonToHtml object and read in a JSON file. Pass the file name to the function.
 
 ```php
-$jthml = new JsonToHtml();
-$htmlOutput = $jthml->readFile("data.json");
+$jhtml = new JsonToHtml();
+$htmlOutput = $jhtml->readFile("data.json");
 echo $htmlOutput;
+
+// shortcut 
+$jhtml = new JsonToHtml("data.json");
+echo $jhtml->getOutput();
 ```
 
 
@@ -30,9 +34,9 @@ echo $htmlOutput;
 You can pass the name of your html file.
 
 ```php
-$jthml = new JsonToHtml();
-$jthml->readFile("data.json");
-$jthml->writeToFile($filename);
+$jhtml = new JsonToHtml();
+$jhtml->readFile("data.json");
+$jhtml->writeToFile($filename);
 ```
 
 
@@ -122,6 +126,8 @@ echo $element->getHtml(); // get div with child elements html
 
 Using this json parser you can create duplication objects which makes it easy to create a html document from you JSON file.
 
+**IMPORTANT! - For styling of elements there is a conflict with the style attribute and the style xml element. Instead use the inline attribute for styling of elements.** In the below examples you can see the **inline** attribute being used.
+
 #### Creating a simple div with styling and list element.
 
 ```json
@@ -181,11 +187,27 @@ Using this json parser you can create duplication objects which makes it easy to
 
 ### Supported Elements
 
-A list of tested html elements. All elements should work. Some are special like <br> and <hr> and require special formating.
+A list of tested html elements. All elements should work. Some are special like br and hr and require special formating.
 
 - html
+
 - h1 - h6 
+
 - head [ title, meta, link, style ]
+
 - body, footer, header
+
 - p, span
+
 - br, hr - special
+
+- form [ label, input, textarea, select ]
+
+- table [ tr, td, th ]
+
+- ul, ol, li 
+
+
+### Demo
+
+http://www.igestdevelopment.com/jhtml/

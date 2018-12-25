@@ -10,7 +10,14 @@
 include("JsonToHtml.php");
 
 
+/* Read file and write to file
 $jthml = new JsonToHtml();
 $jthml->readFile("data.json");
-$jthml->writeToFile("demo.php");
+$jthml->writeToFile("demo.html");
 echo $jthml->getOutput();
+*/
+
+/* Constructor readfile
+$jthml = new JsonToHtml("data.json");
+echo $jthml->getOutput();
+*/

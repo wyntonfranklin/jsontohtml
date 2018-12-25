@@ -25,9 +25,11 @@ class JsonToHtml
     /**
      * JsonToHtml constructor.
      */
-    public function __construct()
+    public function __construct( $file="" )
     {
-
+        if(!empty($file)){
+            $this->readFile($file);
+        }
     }
 
     public function readFile($file)
